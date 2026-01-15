@@ -20,11 +20,13 @@ We at **Techopolis LLC** built SwiftDocX because we couldn't find a solid, nativ
 
 ## Installation
 
+### Swift Package Manager
+
 Add SwiftDocX to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/techopolis-llc/SwiftDocX.git", from: "1.0.0")
+    .package(url: "https://github.com/Techopolis/SwiftDocX.git", from: "1.0.0")
 ]
 ```
 
@@ -36,6 +38,13 @@ Then add it to your target:
     dependencies: ["SwiftDocX"]
 )
 ```
+
+### Xcode
+
+1. Go to **File > Add Package Dependencies...**
+2. Enter: `https://github.com/Techopolis/SwiftDocX.git`
+3. Select version **1.0.0** or later
+4. Click **Add Package**
 
 ## Quick Start
 
