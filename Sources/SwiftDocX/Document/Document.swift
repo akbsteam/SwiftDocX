@@ -58,6 +58,52 @@ public struct DocumentProperties: Sendable {
     }
 }
 
+/// Page dimensions and margins for a document section, in twips
+/// (1/20 of a point, 1440 per inch) — the unit Word's own `w:pgSz`/
+/// `w:pgMar` elements use. Previously hardcoded to US Letter with no way
+/// to override; added so documents can target other paper sizes (e.g.
+/// A4) without patching the XML builder directly.
+public struct PageSetup: Sendable {
+    public var widthTwips: Int
+    public var heightTwips: Int
+    public var marginTopTwips: Int
+    public var marginRightTwips: Int
+    public var marginBottomTwips: Int
+    public var marginLeftTwips: Int
+    public var marginHeaderTwips: Int
+    public var marginFooterTwips: Int
+    public var marginGutterTwips: Int
+
+    public init(
+        widthTwips: Int,
+        heightTwips: Int,
+        marginTopTwips: Int = 1440,
+        marginRightTwips: Int = 1440,
+        marginBottomTwips: Int = 1440,
+        marginLeftTwips: Int = 1440,
+        marginHeaderTwips: Int = 720,
+        marginFooterTwips: Int = 720,
+        marginGutterTwips: Int = 0
+    ) {
+        self.widthTwips = widthTwips
+        self.heightTwips = heightTwips
+        self.marginTopTwips = marginTopTwips
+        self.marginRightTwips = marginRightTwips
+        self.marginBottomTwips = marginBottomTwips
+        self.marginLeftTwips = marginLeftTwips
+        self.marginHeaderTwips = marginHeaderTwips
+        self.marginFooterTwips = marginFooterTwips
+        self.marginGutterTwips = marginGutterTwips
+    }
+
+    /// The library's original hardcoded default — kept as the default
+    /// `Document.pageSetup` value so existing behavior doesn't change
+    /// for anyone not opting into a different page size.
+    public static let usLetter = PageSetup(widthTwips: 12240, heightTwips: 15840)
+
+    public static let a4 = PageSetup(widthTwips: 11906, heightTwips: 16838)
+}
+
 /// Represents a Word document (.docx file)
 public class Document {
     /// The paragraphs in the document
@@ -78,6 +124,11 @@ public class Document {
     /// Document footer (appears at bottom of pages)
     public var footer: Footer?
 
+    /// Page size and margins. Defaults to US Letter (the library's
+    /// original hardcoded behavior); set to `.a4` or a custom
+    /// `PageSetup` to override.
+    public var pageSetup: PageSetup
+
     /// Creates an empty document
     public init() {
         self.paragraphs = []
@@ -86,6 +137,7 @@ public class Document {
         self.properties = DocumentProperties()
         self.header = nil
         self.footer = nil
+        self.pageSetup = .usLetter
     }
 
     /// Creates a document by reading from a .docx file

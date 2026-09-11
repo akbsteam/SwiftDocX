@@ -62,7 +62,18 @@ public struct TableBorders: Equatable, Sendable {
         TableBorders(top: border, bottom: border, left: border, right: border, insideH: border, insideV: border)
     }
 
-    public static let none = TableBorders()
+    /// Every table gets an unconditional `w:tblStyle w:val="TableGrid"`
+    /// (see DocumentXMLBuilder.buildTable), a Word built-in style that
+    /// shows visible grid lines by default. Leaving these sides as `nil`
+    /// omits the `<w:tblBorders>` overrides entirely, which doesn't
+    /// suppress the inherited style's borders — a table explicitly
+    /// asking for no borders would still render with visible lines.
+    /// Using `Border.none` (style "nil") for every side instead emits
+    /// real override elements that do suppress them.
+    public static let none = TableBorders(
+        top: Border.none, bottom: Border.none, left: Border.none,
+        right: Border.none, insideH: Border.none, insideV: Border.none
+    )
     public static let single = TableBorders.all(.single)
 }
 

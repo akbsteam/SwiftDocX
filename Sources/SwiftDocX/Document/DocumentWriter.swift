@@ -128,7 +128,8 @@ public class DocumentWriter {
         let documentXML = buildDocumentXMLWithHeaderFooter(
             elements: document.elements,
             headerRelId: headerRelId,
-            footerRelId: footerRelId
+            footerRelId: footerRelId,
+            pageSetup: document.pageSetup
         )
 
         // Build content types
@@ -212,7 +213,8 @@ public class DocumentWriter {
     private func buildDocumentXMLWithHeaderFooter(
         elements: [DocumentElement],
         headerRelId: String?,
-        footerRelId: String?
+        footerRelId: String?,
+        pageSetup: PageSetup = .usLetter
     ) -> String {
         var xml = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -237,8 +239,8 @@ public class DocumentWriter {
         if let footerRelId = footerRelId {
             xml += "<w:footerReference w:type=\"default\" r:id=\"\(footerRelId)\"/>"
         }
-        xml += "<w:pgSz w:w=\"12240\" w:h=\"15840\"/>"
-        xml += "<w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/>"
+        xml += "<w:pgSz w:w=\"\(pageSetup.widthTwips)\" w:h=\"\(pageSetup.heightTwips)\"/>"
+        xml += "<w:pgMar w:top=\"\(pageSetup.marginTopTwips)\" w:right=\"\(pageSetup.marginRightTwips)\" w:bottom=\"\(pageSetup.marginBottomTwips)\" w:left=\"\(pageSetup.marginLeftTwips)\" w:header=\"\(pageSetup.marginHeaderTwips)\" w:footer=\"\(pageSetup.marginFooterTwips)\" w:gutter=\"\(pageSetup.marginGutterTwips)\"/>"
         xml += "</w:sectPr>"
 
         xml += """

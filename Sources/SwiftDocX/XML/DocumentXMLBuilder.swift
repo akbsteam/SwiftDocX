@@ -10,7 +10,7 @@ public class DocumentXMLBuilder {
     public init() {}
 
     /// Builds the main document.xml content from document elements
-    public func buildDocumentXML(elements: [DocumentElement]) -> String {
+    public func buildDocumentXML(elements: [DocumentElement], pageSetup: PageSetup = .usLetter) -> String {
         var xml = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <w:document xmlns:w="\(XMLNamespaces.wordprocessingML)" xmlns:r="\(XMLNamespaces.relationships)">
@@ -29,8 +29,8 @@ public class DocumentXMLBuilder {
         // Add section properties (required for valid document)
         xml += """
         <w:sectPr>
-        <w:pgSz w:w="12240" w:h="15840"/>
-        <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/>
+        <w:pgSz w:w="\(pageSetup.widthTwips)" w:h="\(pageSetup.heightTwips)"/>
+        <w:pgMar w:top="\(pageSetup.marginTopTwips)" w:right="\(pageSetup.marginRightTwips)" w:bottom="\(pageSetup.marginBottomTwips)" w:left="\(pageSetup.marginLeftTwips)" w:header="\(pageSetup.marginHeaderTwips)" w:footer="\(pageSetup.marginFooterTwips)" w:gutter="\(pageSetup.marginGutterTwips)"/>
         </w:sectPr>
         """
 
