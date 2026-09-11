@@ -32,12 +32,25 @@ public class DocumentWriter {
         var relationships: [(id: String, type: String, target: String)] = []
         var contentTypeOverrides: [(partName: String, contentType: String)] = []
 
-        // Check features needed
+        // Check features needed. Must also look inside table cells, not
+        // just top-level paragraphs — a bulleted paragraph placed in a
+        // TableCell (a normal, supported use: Paragraph.listType is a
+        // plain property, usable anywhere a Paragraph is) previously
+        // didn't trip this check, so numbering.xml and its relationship
+        // were silently omitted while the paragraph's own XML still
+        // referenced w:numId="1" — a dangling reference to a numbering
+        // definition that doesn't exist anywhere in the package.
         let hasLists = document.elements.contains { element in
-            if case .paragraph(let para) = element {
+            switch element {
+            case .paragraph(let para):
                 return para.listType != nil
+            case .table(let table):
+                return table.rows.contains { row in
+                    row.cells.contains { cell in
+                        cell.paragraphs.contains { $0.listType != nil }
+                    }
+                }
             }
-            return false
         }
 
         // rId1 = styles.xml, rId2 = settings.xml, rId3 = numbering.xml (if lists exist)
