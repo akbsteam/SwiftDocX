@@ -1,3 +1,6 @@
+// Reading a .docx needs XMLDocument/XMLElement, which iOS lacks; the writer
+// does not, so on iOS the module is write-only. See PATCHES.md in Helm.
+#if os(macOS) || canImport(FoundationXML)
 import Foundation
 
 /// Error types for document reading operations
@@ -55,3 +58,4 @@ public class DocumentReader {
         return try zipReader.listEntries(at: url)
     }
 }
+#endif

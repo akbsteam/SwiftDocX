@@ -140,6 +140,7 @@ public class Document {
         self.pageSetup = .usLetter
     }
 
+#if os(macOS) || canImport(FoundationXML)
     /// Creates a document by reading from a .docx file
     /// - Parameter url: URL to the .docx file
     public convenience init(contentsOf url: URL) throws {
@@ -151,6 +152,7 @@ public class Document {
             throw DocumentError.readFailed(error.localizedDescription)
         }
     }
+#endif
 
     /// Writes the document to a .docx file
     /// - Parameter url: Destination URL for the .docx file
