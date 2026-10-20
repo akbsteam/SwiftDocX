@@ -1,3 +1,6 @@
+// Reading a .docx needs XMLDocument/XMLElement, which iOS lacks; the writer
+// does not, so on iOS the module is write-only. See PATCHES.md in Helm.
+#if os(macOS) || canImport(FoundationXML)
 import Foundation
 
 #if canImport(FoundationXML)
@@ -257,3 +260,4 @@ public class DocumentXMLParser {
         return nil
     }
 }
+#endif
